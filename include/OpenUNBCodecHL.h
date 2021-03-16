@@ -2,6 +2,8 @@
 #include "OpenUNBEncoderLL.h"
 
 
+void initOpenUNBCodec();
+
 std::vector<uint8_t> encode_64(const std::vector<uint8_t>& data);
 std::vector<uint8_t> encode_96(const std::vector<uint8_t>& data);
 std::vector<uint8_t> decode_64(const std::vector<float>& data);

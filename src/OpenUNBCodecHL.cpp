@@ -183,7 +183,7 @@ std::vector<uint8_t> encode_96(const std::vector<uint8_t>& data) {
     return stdpolar_encode_systematic_noperm(dataS, frozen_indicator);
 }
 
-void init() {
+void initOpenUNBCodec() {
     frozen_indicator_64 = new uint8_t[sizeof(info_bit_pattern_64)];
     frozen_indicator_96 = new uint8_t[sizeof(info_bit_pattern_96)];
 

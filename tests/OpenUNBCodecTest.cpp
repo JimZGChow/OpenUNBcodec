@@ -3,13 +3,12 @@
 #include <ctime>
 #include <OpenUNBCodecHL.h>
 
-void init();
 bool test64();
 bool test96();
 
 int main() {
     srand(time(0));
-    init();
+    initOpenUNBCodec();
     test64();
 }
 
