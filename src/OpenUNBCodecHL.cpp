@@ -25,7 +25,7 @@ std::vector<uint8_t> decode_96(const std::vector<float>& data) {
 
     crc_err = crc_ok_array(0x327, dec);
 
-    std::cout << " crc_ok: " << getStringBinFromVector(crc_err) << std::endl;
+    //std::cout << " crc_ok: " << getStringBinFromVector(crc_err) << std::endl;
 
     float max = -1000000000000;
     int index = -1;
