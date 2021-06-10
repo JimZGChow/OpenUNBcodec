@@ -74,15 +74,9 @@ inline float vnop(float a, float b)
     return a + b;
 }
 
-vector<vector<float>> prob;
-vector<vector<uint8_t>> u;
-unsigned idx;
-unsigned L;
-vector<bool> used;
-vector<tuple<float, int, bool> > sorted;
 
 
-vector<pcscl_list> pcscl(const vector<vector<float> >& y, vector<int>::const_iterator f_it) {
+vector<pcscl_list> OpenUNBPolarDecoder::pcscl(const vector<vector<float> >& y, vector<int>::const_iterator f_it) {
 
     const unsigned N = y[0].size();
     const unsigned L0 = y.size();
@@ -202,7 +196,8 @@ vector<pcscl_list> pcscl(const vector<vector<float> >& y, vector<int>::const_ite
     }
 }
 
-vector<vector<uint8_t>> pcscl_prep(int m, int _L, const std::vector<float>& data, vector<vector<float>>* _prob, uint8_t* info_bit_pattern) {
+vector<vector<uint8_t>> OpenUNBPolarDecoder::pcscl_prep(int m, int _L, const std::vector<float>& data, vector<vector<float>>* _prob, uint8_t* info_bit_pattern) {
+
     /* Read arguments */
     int N = 1 << m;
     L = _L;
@@ -249,7 +244,14 @@ vector<vector<uint8_t>> pcscl_prep(int m, int _L, const std::vector<float>& data
 
 }
 
-vector<vector<uint8_t>> pcscl_prep(int m, int _L,const std::vector<uint8_t>& data, vector<vector<float>>* _prob, uint8_t* info_bit_pattern) {
+vector<vector<uint8_t>> OpenUNBPolarDecoder::pcscl_prep(int m, int _L,const std::vector<uint8_t>& data, vector<vector<float>>* _prob, uint8_t* info_bit_pattern) {
+    vector<vector<float>> prob;
+    vector<vector<uint8_t>> u;
+    unsigned idx;
+    unsigned L;
+    vector<bool> used;
+    vector<tuple<float, int, bool> > sorted;
+
     /* Read arguments */
     int N = 1 << m;
     L = _L;
@@ -293,7 +295,7 @@ vector<vector<uint8_t>> pcscl_prep(int m, int _L,const std::vector<uint8_t>& dat
 
 }
 
-uint16_t crc(uint32_t polynom, std::vector<uint8_t> a) {
+uint16_t crc(uint32_t polynom, const std::vector<uint8_t> &a) {
     uint32_t reg = 0;
     for (auto b : a) {
         reg ^= b;
@@ -303,7 +305,7 @@ uint16_t crc(uint32_t polynom, std::vector<uint8_t> a) {
     return reg & 0x3FF;
 }
 
-uint8_t crc_ok(uint32_t polynom, std::vector<uint8_t> a) {
+uint8_t OpenUNBPolarDecoder::crc_ok(uint32_t polynom, const std::vector<uint8_t> &a) {
     uint32_t reg = 0;
     for (auto b : a) {
         reg ^= b;
@@ -313,7 +315,7 @@ uint8_t crc_ok(uint32_t polynom, std::vector<uint8_t> a) {
     return reg == 0;
 }
 
-vector<uint8_t> crc_ok_array(uint32_t polynom, vector<vector<uint8_t>> a)
+vector<uint8_t> OpenUNBPolarDecoder::crc_ok_array(uint32_t polynom, const vector<vector<uint8_t>> &a)
 {
     vector<uint8_t> res(a.size());
     for (unsigned i = 0; i < a.size(); i++) {
@@ -322,78 +324,14 @@ vector<uint8_t> crc_ok_array(uint32_t polynom, vector<vector<uint8_t>> a)
     return res;
 }
 
-vector<uint8_t> remove_crc(vector<uint8_t> a)
+vector<uint8_t> OpenUNBPolarDecoder::remove_crc(const vector<uint8_t> &a)
 {
     vector<uint8_t> res = a;
     res.erase(res.end() - 10, res.end());
     return res;
 }
 
-#ifdef MEX
-void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
-{
-    /* Read arguments */
-
-    int m = (int)*(mxGetPr(prhs[0])); // Length
-    int N = 1 << m;
-    L = (int)*(mxGetPr(prhs[1])); // List size
-
-    // f matrix
-    double* input = mxGetPr(prhs[2]);
-
-    vector<int> f_matrix(N);
-    for (int i = 0; i < N; ++i)
-    {
-        f_matrix[i] = (int)input[i];
-    }
-
-
-    // LLR
-    input = mxGetPr(prhs[3]);
-
-    vector<float> in_llr(N);
-    for (int i = 0; i < N; ++i)
-    {
-        in_llr[i] = input[i];
-    }
-
-    /* Initialization */
-    used.assign(L, false);
-    used[0] = true;
-    u.assign(L, vector<bool>(N));
-    prob.assign(L, vector<float>(N + 1));
-    idx = 0;
-
-    /* Decode */
-    pcscl({ in_llr }, f_matrix.begin());
-
-    /* Return results to MATLAB */
-    // iwd list
-    plhs[0] = mxCreateDoubleMatrix(L, N, mxREAL);
-    double* output = mxGetPr(plhs[0]);
-    for (int i = 0; i < N; ++i)
-    {
-        for (int j = 0; j < L; ++j)
-        {
-            output[i * L + j] = u[j][i];
-        }
-    }
-
-
-    // probabilities
-    plhs[1] = mxCreateDoubleMatrix(L, N + 1, mxREAL);
-    output = mxGetPr(plhs[1]);
-    for (int i = 0; i < N + 1; ++i)
-    {
-        for (int j = 0; j < L; ++j)
-        {
-            output[i * L + j] = prob[j][i];
-        }
-    }
-}
-#endif
-
-std::vector<std::vector<uint8_t>> polar_transform_noperm(std::vector<std::vector<uint8_t>> data) {
+std::vector<std::vector<uint8_t>> OpenUNBPolarDecoder::polar_transform_noperm(const std::vector<std::vector<uint8_t>> &data) {
     if (data[0].size() == 1) {
         return data;
     }
@@ -435,7 +373,7 @@ std::vector<std::vector<uint8_t>> polar_transform_noperm(std::vector<std::vector
 
 }
 
-std::vector<std::vector<uint8_t>> extract_with_filter(const std::vector<std::vector<uint8_t>>& data, const uint16_t* filtr, int K) {
+std::vector<std::vector<uint8_t>> OpenUNBPolarDecoder::extract_with_filter(const std::vector<std::vector<uint8_t>>& data, const uint16_t* filtr, int K) {
     std::vector<std::vector<uint8_t>> ret(16, std::vector<uint8_t>(K));
     for (int i = 0; i < K; i++) {
         for (int x = 0; x < data.size(); x++) {

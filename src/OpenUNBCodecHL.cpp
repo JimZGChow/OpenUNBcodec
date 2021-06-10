@@ -14,16 +14,17 @@ uint16_t* crc_mask_64;
 uint16_t* crc_mask_96;
 
 std::vector<uint8_t> decode_96(const std::vector<float>& data) {
+    OpenUNBPolarDecoder opd;
     std::vector<std::vector<float>> prob;
-    std::vector<std::vector<uint8_t>> dec = pcscl_prep(8, 16, data, &prob, info_bit_pattern_96);
+    std::vector<std::vector<uint8_t>> dec = opd.pcscl_prep(8, 16, data, &prob, info_bit_pattern_96);
 
-    dec = polar_transform_noperm(dec);
+    dec = opd.polar_transform_noperm(dec);
 
-    dec = extract_with_filter(dec, crc_mask_96, num_of_nonzero_bits_96 - short_96);
+    dec = opd.extract_with_filter(dec, crc_mask_96, num_of_nonzero_bits_96 - short_96);
 
     std::vector<uint8_t> crc_err;
 
-    crc_err = crc_ok_array(0x327, dec);
+    crc_err = opd.crc_ok_array(0x327, dec);
 
     //std::cout << " crc_ok: " << getStringBinFromVector(crc_err) << std::endl;
 
@@ -46,16 +47,17 @@ std::vector<uint8_t> decode_96(const std::vector<float>& data) {
 }
 
 std::vector<uint8_t> decode_64(const std::vector<float>& data) {
+    OpenUNBPolarDecoder opd;
     std::vector<std::vector<float>> prob;
-    std::vector<std::vector<uint8_t>> dec = pcscl_prep(7, 16, data, &prob, info_bit_pattern_64);
+    std::vector<std::vector<uint8_t>> dec = opd.pcscl_prep(7, 16, data, &prob, info_bit_pattern_64);
 
-    dec = polar_transform_noperm(dec);
+    dec = opd.polar_transform_noperm(dec);
 
-    dec = extract_with_filter(dec, crc_mask_64, num_of_nonzero_bits_64 - short_64);
+    dec = opd.extract_with_filter(dec, crc_mask_64, num_of_nonzero_bits_64 - short_64);
 
     std::vector<uint8_t> crc_err;
 
-    crc_err = crc_ok_array(0x327, dec);
+    crc_err = opd.crc_ok_array(0x327, dec);
 
     float max = -1000000000000;
     int index = -1;
