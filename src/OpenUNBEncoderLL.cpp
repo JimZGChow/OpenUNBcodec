@@ -6,7 +6,18 @@ std::vector<uint8_t> stdpolar_encode_systematic_noperm(const std::vector<uint8_t
     std::vector<int> inf_idx;
     std::vector<uint8_t> u(n_polar);
 
-    for (int i = 0, j = 0; i < iwd_s.size(); i++) {
+    int n1 = 0, n0 = 0;
+
+    for (int i = 0; i<iwd_s.size(); i++ ) {
+        if (_frozen_indicator[i] == 0) {
+            n1++;
+        } else {
+            n0++;
+        }
+    }
+
+    int j = 0;
+    for (int i = 0; i < iwd_s.size(); i++) {
         if (_frozen_indicator[i] == 0) {
             iwd_s[i] = _iwd[j++];
             inf_idx.push_back(i + 1);

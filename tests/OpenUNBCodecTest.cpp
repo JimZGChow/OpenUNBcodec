@@ -7,13 +7,18 @@ bool test64();
 bool test96();
 
 int main() {
-    srand(time(0));
     initOpenUNBCodec();
+
+    std::cout << "  ====  Start test for short msg  ====  \n\n";
     test64();
+    std::cout << "\n\n  ====  Start test for long msg  ====  \n\n";
+    test96();
+
+    return 0;
 }
 
 bool test96() {
-    std::vector<uint8_t> data_in = getRandomVector(96);
+    std::vector<uint8_t> data_in = getVectorFromStringHex("010203040506070809000102");
 
     std::cout << "data: size = " << data_in.size() << " bit" << std::endl;
     std::cout << getStringBinFromVector(data_in) << std::endl;
@@ -51,7 +56,7 @@ bool test96() {
 }
 
 bool test64() {
-    std::vector<uint8_t> data_in = getRandomVector(64);
+    std::vector<uint8_t> data_in = getVectorFromStringHex("B3B4F7D43463B157");
 
     std::cout << "data: size = " << data_in.size() << " bit" << std::endl;
     std::cout << getStringBinFromVector(data_in) << std::endl;

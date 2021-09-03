@@ -1,0 +1,13 @@
+# ninja log v5
+1	259	652029314	CMakeFiles/OpenUNBCodecLib.dir/src/OpenUNBEncoderLL.cpp.obj	243246ae0179e16
+3	577	652029315	CMakeFiles/OpenUNBCodecTest.dir/tests/OpenUNBCodecTest.cpp.obj	8cf029959551782a
+8	587	652029315	CMakeFiles/OpenUNBCodecLib.dir/src/OpenUNBCodecHL.cpp.obj	63a1bbb38eb5c1f4
+6	756	652029315	CMakeFiles/OpenUNBCodecLib.dir/src/OpenUNBDecoderLL.cpp.obj	ee4d370b1e098471
+757	1312	652029315	OpenUNBCodecLib.dll	20812430f5e0eab3
+757	1312	652029315	OpenUNBCodecLib.lib	20812430f5e0eab3
+0	248	652029315	OpenUNBCodecLib.dll	20812430f5e0eab3
+0	248	652029315	OpenUNBCodecLib.lib	20812430f5e0eab3
+1	120	652029315	OpenUNBCodecLib.dll	20812430f5e0eab3
+1	120	652029315	OpenUNBCodecLib.lib	20812430f5e0eab3
+1	243	652029315	OpenUNBCodecLib.dll	20812430f5e0eab3
+1	243	652029315	OpenUNBCodecLib.lib	20812430f5e0eab3

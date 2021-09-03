@@ -1,6 +1,6 @@
 #include "OpenUNBCodecHL.h"
 
-uint8_t info_bit_pattern_64[] = { 0,0,0,0,0,0,0,1,0,0,0,1,0,1,1,1,0,0,0,0,0,0,1,1,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,1,1,0,0,0,1,0,1,1,1,0,1,1,1,1,1,1,1,0,0,0,1,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 };
+uint8_t info_bit_pattern_64[] = {0,0,0,0,0,0,0,1,0,0,0,1,0,1,1,1,0,0,0,0,0,0,1,1,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0,1,1,1,0,0,0,1,0,1,1,1,0,1,1,1,1,1,1,1,0,0,0,1,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 const int num_of_nonzero_bits_64 = 74;
 const int short_64 = 0;
 uint8_t info_bit_pattern_96[] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,1,0,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,0,0,0,1,0,1,1,1,0,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,1,1,0,1,1,1,1,1,1,1,0,0,0,1,0,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 };
@@ -89,10 +89,11 @@ std::vector<uint8_t> getRandomVector(int size) {
 
 std::string getStringHexFromVector(std::vector<uint8_t> data) {
     std::string ret = "";
-    for (int i = data.size() / 4 - 1; i >= 0; i--) {
+    //for (int i = data.size() / 4 - 1; i >= 0; i--) {
+    for (int i = 0; i < data.size() / 4; i++) {
         uint8_t hex = 0;
         for (int j = 0; j < 4; j++) {
-            hex = (hex << 1) | data[i * 4 + 3 - j];
+            hex = (hex << 1) | data[i * 4 +  j];
         }
 
         if (hex < 10)
@@ -107,7 +108,7 @@ std::string getStringHexFromVector(std::vector<uint8_t> data) {
 std::string getStringBinFromVector(std::vector<uint8_t> data) {
     std::string ret = "";
     for (int i = 0; i < data.size(); i++) {
-        //for (int i = data.size() - 1; i >= 0; i--) {
+    //for (int i = data.size() - 1; i >= 0; i--) {
         ret.push_back(data[i] + '0');
         //ret.push_back(',');
     }
@@ -119,8 +120,8 @@ std::string getStringBinFromVector(std::vector<uint8_t> data) {
 std::vector<uint8_t> getVectorFromStringHex(std::string s) {
     std::vector<uint8_t> ret;
 
-    //for (int i = 0; i < s.length(); i++) {
-    for (int i = s.length() - 1; i >= 0; i--) {
+    for (int i = 0; i < s.length(); i++) {
+    //for (int i = s.length() - 1; i >= 0; i--) {
         uint8_t halfByte;
 
         if (s[i] >= 'a' && s[i] <= 'f') {
@@ -138,7 +139,7 @@ std::vector<uint8_t> getVectorFromStringHex(std::string s) {
                     continue;
 
         for (int j = 0; j < 4; j++) {
-            ret.push_back((halfByte >> j) & 1);
+            ret.push_back((halfByte >> (3 - j)) & 1);
         }
     }
 
@@ -170,6 +171,18 @@ std::vector<uint8_t> getVectorFromArray(uint8_t* array, int size) {
     return ret;
 }
 
+std::vector<uint8_t> getVectorFromArrayHex(uint8_t* array, int size) {
+    std::vector<uint8_t> ret(size * 8);
+
+    for (int i = 0; i < size; i++) {
+        for (int i=0; i<8; i++) {
+
+        }
+    }
+
+    return ret;
+}
+
 std::vector<uint8_t> encode_64(const std::vector<uint8_t>& data) {
     std::vector<uint8_t> frozen_indicator = getVectorFromArray(frozen_indicator_64, sizeof(info_bit_pattern_64));
     return stdpolar_encode_systematic_noperm(data, frozen_indicator);
@@ -182,7 +195,9 @@ std::vector<uint8_t> encode_96(const std::vector<uint8_t>& data) {
     for (int i = 0; i < short_96; i++)
         dataS.push_back(0);
 
-    return stdpolar_encode_systematic_noperm(dataS, frozen_indicator);
+    dataS = stdpolar_encode_systematic_noperm(dataS, frozen_indicator);
+    dataS.erase(dataS.end() - 64, dataS.end());
+    return dataS;
 }
 
 void initOpenUNBCodec() {
